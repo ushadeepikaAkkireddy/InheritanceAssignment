@@ -1,26 +1,57 @@
 ﻿using System;
-using System.Linq;
-
-namespace Assignment
+namespace Assignment22
 {
-    internal class Instructor1
 
+    class Insurance
     {
-        public string Name { get; set; }
-        public float avgfeedback { get; set; }
-        public int experience { get; set; }
-        public string[] instructorskill { get; set;  }
-        public Instructor1(string name, float avgfeedback,int experience, string[] instructorskill) 
-        {
-            this.Name = name;
-            this.avgfeedback = avgfeedback;
-            this.experience = experience;
-            this.instructorskill = instructorskill;
+        static int counter = 1000;
+        int insuranceId;
+        string consumerName;
+        int age;
+        int creditHistory;
+        string[] documents;
 
-        }
-        public bool CheckSkill(string technology)
+        static Insurance()
         {
-            if (validateEligibilty() && instructorskill.Contains(technology))
+            counter = 1000;
+        }
+
+        public Insurance()
+        {
+            age = 0;
+            creditHistory = 0;
+        }
+
+        public Insurance(string consumerName) : this()
+        {
+            this.consumerName = consumerName;
+        }
+
+        public Insurance(string consumerName, string[] documents)
+        {
+            this.consumerName = consumerName;
+            this.documents = documents;
+        }
+
+        public Insurance(string consumerName, int age, int creditHistory, string[] documents)
+        {
+            this.consumerName = consumerName;
+            this.documents = documents;
+            this.age = age;
+            this.creditHistory = creditHistory;
+        }
+
+        public bool CheckEligibility()
+        {
+            if (age < 18)
+            {
+                return false;
+            }
+            else if (age > 18 && age <= 30 && creditHistory <= 60000)
+            {
+                return true;
+            }
+            else if (age > 30 && creditHistory <= 45000)
             {
                 return true;
             }
@@ -29,31 +60,39 @@ namespace Assignment
                 return false;
             }
         }
-        public bool validateEligibilty()
+        public bool CheckDocuments(string[] acceptableDocuments)
         {
-            if(experience>3&&avgfeedback>=4.5)
+            if (CheckEligibility())
             {
-                return true;
-            }
-            else if (experience <= 3 && avgfeedback >= 4)
-            {
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("Experience" + experience);
-                Console.WriteLine("Avg feedback" + avgfeedback);
+
+                foreach (string document in documents)
+                {
+                    foreach (string acceptableDocument in acceptableDocuments)
+                    {
+                        if (document == acceptableDocument)
+                        {
+                            insuranceId = counter++;
+                            return true;
+                        }
+                    }
+                }
                 return false;
             }
+            else { return false; }
         }
+
+
 
         static void Main(string[] args)
         {
-            String[] skill = new string[] { "c#", "java", "sql" };
-            Instructor1 i = new Instructor1("usha", 4.2f, 3, skill);
-            Console.WriteLine("is instructor eligible" + i.validateEligibilty());
-            Console.WriteLine("does instructor have skill in python"+i.CheckSkill("python"));
-
+            string[] acceptableDocuments = { "adharcard ", "pan card", "passport" };
+            Insurance i = new Insurance("usha", 25, 25000, new string[] { "aadhar card", "passport" });
+            Console.WriteLine("is the consumer eligible for insurace:" + i.CheckEligibility());
+            Console.WriteLine("does the consumer have the required documents:" + i.CheckDocuments(acceptableDocuments));
+            Console.WriteLine("insurance id:" + i.insuranceId);
         }
     }
 }
+
+
+
